@@ -1,0 +1,43 @@
+<!-- profile.html -->
+{% extends 'base.html' %}
+
+{% block title %}Student Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Student Profile</h1>
+    <form action="/profile" method="post">
+        <div class="mb-3">
+            <label for="student_id" class="form-label">Enter Student ID</label>
+            <input type="text" id="student_id" name="student_id" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    {% if userDetails %}
+    <table class="table mt-4">
+        <tbody>
+            <tr>
+                <th scope="row">Student Name</th>
+                <td>{{ userDetails.name }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Student ID</th>
+                <td>{{ userDetails.student_id }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Department</th>
+                <td>{{ userDetails.department }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Year</th>
+                <td>{{ userDetails.year }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Phone</th>
+                <td>{{ userDetails.phone }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

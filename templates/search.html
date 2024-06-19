@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search Routes
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Search Routes</h1>
+    <form action="/search" method="post">
+        <div class="mb-3">
+            <label for="query" class="form-label">Search</label>
+            <input type="text" id="query" name="query" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="search_type" class="form-label">Search by</label>
+            <select id="search_type" name="search_type" class="form-select">
+                <option value="boarding_point">Common Boarding Point</option>
+                <option value="route_id">Route ID</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if route_results %}
+    <div class="accordion mt-4" id="routeAccordion">
+        {% for route in route_results %}
+        <div class="card">
+            <div class="card-header" id="heading{{ loop.index }}">
+                <div>
+                    <p><strong>Route Name:</strong> {{ route['Route Name'] }}</p>
+                    <p><strong>Boarding Points:</strong>
+                        {% for point in route['Boarding Points'] %}
+                            {{ point }}{{ "," if not loop.last }}
+                        {% endfor %}
+                    </p>
+                    <p><strong>Starting Time (Morning):</strong> {{ route['Starting Time (Morning)'] }}</p>
+                    <p><strong>Departure Time (Evening):</strong> {{ route['Departure Time (Evening)'] }}</p>
+                    <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                        Route {{ route['Route No.'] }}: {{ route['Route Name'] }}
+                    </button>
+                </div>
+            </div>
+            <div class="collapse" id="collapse{{ loop.index }}" data-bs-parent="#routeAccordion">
+                <div class="card card-body">
+                    <h5>Students Boarding at {{ route['Route Name'] }}</h5>
+                    <ul>
+                        {% for student in student_results %}
+                            {% if (search_type == 'boarding_point' and student['boarding_point'] == query) or 
+                                  (search_type == 'route_id' and str(student['route_id']) == query) %}
+                                <li>
+                                    <strong>Name:</strong> {{ student['name'] }}<br>
+                                    <strong>Student ID:</strong> {{ student['student_id'] }}<br>
+                                    <strong>Department:</strong> {{ student['department'] }}<br>
+                                    <strong>Phone:</strong> {{ student['phone'] }}<br>
+                                    <strong>Year:</strong> {{ student['year'] }}<br>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="mt-4">No results found.</p>
+    {% endif %}
+</div>
+{% endblock %}
